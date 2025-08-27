@@ -15,16 +15,63 @@ spec:
       containers:
       - name: demo
         image: flask-app:0.1.0
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: demo
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30080
+      #nodePort: 30080
   selector:
     app: demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-deployment
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      # targetPort: 80
+      #nodePort: 30080
+  selector:
+    app: nginx

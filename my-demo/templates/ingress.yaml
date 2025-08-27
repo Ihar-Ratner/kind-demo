@@ -1,0 +1,40 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: {{ .Release.Name }}-deployment
+    env: demo
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /hello
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-deployment
+            port:
+              number: {{ .Values.service.ports.port }}
+      - path: /test
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-deployment
+            port:
+              number: {{ .Values.service.ports.port }}
+      - path: /metrics
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-deployment
+            port:
+              number: {{ .Values.service.ports.port }}
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-deployment
+            port:
+              number: {{ .Values.service.ports.port }}

@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-demo
+  namespace: argocd # namespace for application CRD
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io # defeni resource deletion when argocd application is removed
+spec:
+  project: default # define argocd project
+  source:
+    repoURL: https://github.com/Ihar-Ratner/kind-demo.git # define repo url
+    targetRevision: main # deifne branch
+    path: my-demo # define path to folder with k8s deployments
+    helm:
+      releaseName: test-demo # relesase name for helm chart
+      valueFiles:
+      - env/dev/values.yaml # path to values file to rewrite default helm values
+  destination:
+    server: https://kubernetes.default.svc # define k8s cluster
+    namespace: default # define namescape for resources
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
