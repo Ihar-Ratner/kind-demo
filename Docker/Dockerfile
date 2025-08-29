@@ -8,7 +8,7 @@ WORKDIR /app
 COPY app.py /app/
 
 # Install dependencies
-RUN pip install flask
+RUN pip install flask prometheus-client flask-prometheus-metrics
 
 # Define the command to run the app
 CMD ["python", "app.py"]

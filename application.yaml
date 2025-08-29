@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app-argo-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Ihar-Ratner/kind-demo.git # define the repo
+    targetRevision: main # define the branch
+    path: argocd-demo # define the path to manifests or helm chart
+  destination:
+    server: https://kubernetes.default.svc # define cluster where to deploy
+    namespace: my-app-argo-application # define
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+

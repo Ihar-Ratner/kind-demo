@@ -3,6 +3,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-demo
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - http:
@@ -21,4 +23,11 @@ spec:
             name: demo
             port:
               number: 8080
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-deployment
+            port:
+              number: 80
 ---
