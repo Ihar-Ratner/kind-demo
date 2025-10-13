@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s # How frequently to scrape targets
+
+rule_files:
+  - /etc/prometheus/windows_rules.yml
+
+scrape_configs:
+  - job_name: 'flask-app'
+    # The 'flask-app' hostname will be resolved by Docker's internal DNS
+    # when running with docker-compose.
+    static_configs:
+      # - targets: ['flask-app:8090']
+      - targets: 
+          - 172.29.240.1:8090
+    metrics_path: '/metrics'
+  - job_name: 'windows-node'
+    # The 'flask-app' hostname will be resolved by Docker's internal DNS
+    # when running with docker-compose.
+    static_configs:
+      - targets: 
+          - 172.29.240.1:9182
+    metrics_path: '/metrics'

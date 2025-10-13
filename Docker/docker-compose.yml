@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build:
+      context: . # Build from the current directory (where app.py is)
+      dockerfile: Dockerfile # Assuming your Dockerfile for the Flask app is named Dockerfile
+    ports:
+      - "8090:8080" # Map container port 8080 to host port 8080
+    networks:
+      - monitoring_network
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./windows_rules.yml:/etc/prometheus/windows_rules.yml # Mount the new rules file
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml # Mount your custom Prometheus config
+    ports:
+      - "9090:9090" # Map container port 9090 to host port 9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - monitoring_network
+    depends_on:
+      - flask-app # Ensure flask-app starts before Prometheus
+    restart: always
+
+networks:
+  monitoring_network:
+    driver: bridge
